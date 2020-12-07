@@ -34,11 +34,14 @@ import { sendRefreshToken } from './sendRefreshToken';
 
         // token is valid and we can 
         // set back an access token
-        const user = await User.findOne({ id: payload.userId })
+        const user = await User.findOne({ id: payload.userId });
         
-        if(!user) {
+        if (!user) {
           return res.send({ ok: false, accessToken:''})
-          
+        }
+
+        if (user.tokenVersion !== payload.tokenVersion) {
+          return res.send({ ok: false, accessToken: '' })
         }
       
         sendRefreshToken(res, createRefreshToken(user) )
